@@ -38,17 +38,35 @@ public class BitalinoRecorder {
     final int samplerate = 100;
     //canales que lee
     final int[] analogs = {0,1,2};
-    static long resume = 0;
-    static long pause;
+    long resume = 0;
+    long pause;
+    //ECG = 0, EMG=1,EDA=2,ECG&EMG=3,ECG&EDA=4,EMG&EDA=5,EMG&ECG&EDA=6
+    private int sensor_op;
     
     private static final Logger logger = Logger.getLogger(BitalinoRecorder.class.getName());
     
     public int sw=1;
     
-    public BitalinoRecorder(File stageFolder, ProjectOrganization org, Participant p,BitalinoCaptureConfiguration c){
+    public BitalinoRecorder(File stageFolder, ProjectOrganization org, Participant p,int sensor,BitalinoCaptureConfiguration c){
         participant = p;
         this.org = org;
         this.config = c;
+        switch(sensor){            
+                case 1:
+                    this.sensor_op = 0;
+                case 10:
+                    this.sensor_op = 1;
+                case 11:
+                    this.sensor_op = 3;
+                case 100:                    
+                    this.sensor_op = 2;
+                case 101:
+                    this.sensor_op = 4;
+                case 110:
+                    this.sensor_op = 5;
+                case 111:
+                    this.sensor_op = 6;
+        }                    
         createFile(stageFolder);
     }
 
@@ -65,7 +83,7 @@ public class BitalinoRecorder {
         try {
             output.createNewFile();
             outputStream = new FileOutputStream(output);
-            desc = new FileDescription(output, BitalinoRecorder.class.getName());
+            desc = new FileDescription(output, BitalinoRecorder.class.getName()+sensor_op);
         } catch (FileNotFoundException ex) {
             logger.log(Level.SEVERE, null, ex);
         } catch (IOException ex) {

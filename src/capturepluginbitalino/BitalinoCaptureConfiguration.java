@@ -12,11 +12,13 @@ import mo.organization.ProjectOrganization;
 public class BitalinoCaptureConfiguration implements RecordableConfiguration {
     
     private String id;
-    BitalinoRecorder sr;    
+    BitalinoRecorder sr;
+    private int sensor;
     private static final Logger logger = Logger.getLogger(BitalinoRecorder.class.getName());
 
-    BitalinoCaptureConfiguration(String id) {
+    BitalinoCaptureConfiguration(String id, int sensor) {
         this.id = id;
+        this.sensor = sensor;
     }
     
     BitalinoCaptureConfiguration(){
@@ -25,7 +27,7 @@ public class BitalinoCaptureConfiguration implements RecordableConfiguration {
 
     @Override
     public void setupRecording(File stageFolder, ProjectOrganization org, Participant p) {
-         sr = new BitalinoRecorder(stageFolder, org, p, this);
+         sr = new BitalinoRecorder(stageFolder, org, p,sensor, this);
     }
 
     @Override
@@ -46,7 +48,7 @@ public class BitalinoCaptureConfiguration implements RecordableConfiguration {
     @Override
     public File toFile(File parent) {
         try {
-            File f = new File(parent, "bitalino_"+id+".xml");
+            File f = new File(parent, "bitalino_"+id+"-"+sensor+".xml");
             f.createNewFile();
             return f;
         } catch (IOException ex) {
@@ -58,9 +60,10 @@ public class BitalinoCaptureConfiguration implements RecordableConfiguration {
     @Override
     public Configuration fromFile(File file) {
         String fileName = file.getName();
-        if (fileName.contains("_") && fileName.contains(".")){
-            String newId = fileName.substring(fileName.indexOf('_') + 1, fileName.lastIndexOf("."));
-            BitalinoCaptureConfiguration c = new BitalinoCaptureConfiguration(newId);
+        if (fileName.contains("_") && fileName.contains(".") && fileName.contains("-")){
+            String newId = fileName.substring(fileName.indexOf('_') + 1, fileName.indexOf("-"));
+            String newSensor = fileName.substring(fileName.indexOf('-') + 1, fileName.indexOf("."));
+            BitalinoCaptureConfiguration c = new BitalinoCaptureConfiguration(newId,Integer.parseInt(newSensor));
             return c;
         }
         return null;
