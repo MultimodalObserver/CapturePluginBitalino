@@ -7,7 +7,10 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mo.core.ui.GridBConstraints;
@@ -17,6 +20,8 @@ import mo.organization.ProjectOrganization;
 public class BitalinoCaptureConfigurationDialog extends JDialog implements DocumentListener {
 
     JLabel errorLabel;
+    JLabel srValue;
+    JSlider sSR;
     JTextField nameField;
     JButton accept;
     ProjectOrganization org;
@@ -25,6 +30,7 @@ public class BitalinoCaptureConfigurationDialog extends JDialog implements Docum
     JCheckBox ECG;
     JCheckBox EDA;
     public int sensor_rec;
+    int SR;
 
     boolean accepted = false;
 
@@ -53,8 +59,12 @@ public class BitalinoCaptureConfigurationDialog extends JDialog implements Docum
         GridBConstraints gbc = new GridBConstraints();
 
         JLabel label = new JLabel("Configuration name: ");
+        JLabel samplerate = new JLabel("Select sample rate:");
         nameField = new JTextField();
         nameField.getDocument().addDocumentListener(this);
+        sSR = new JSlider(0,100);
+        sSR.setValue(100);
+        srValue = new JLabel("100");
         
         ECG = new JCheckBox();
         EMG = new JCheckBox();
@@ -73,12 +83,40 @@ public class BitalinoCaptureConfigurationDialog extends JDialog implements Docum
         add(sen_emg, gbc.gy(2).gx(3).gw(1));
         add(EMG,gbc.gy(2).gx(4).gw(1));
         add(sen_eda, gbc.gy(2).gx(5).gw(1));
-        add(EDA,gbc.gy(2).gx(6).gw(1));
-              
+        add(EDA,gbc.gy(2).gx(6).gw(1));     
+        add(samplerate, gbc.gy(4).gx(0));
+        add(srValue,gbc.gx(2).gy(4).wx(1).gw(1));
+        add(sSR,gbc.gy(6).wx(1).gw(6));
+          
+        sSR.addChangeListener(new ChangeListener(){
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                srValue.setText(String.valueOf(sSR.getValue()));
+            }
+        });
+        
+        ECG.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {            
+                updateState();
+            }            
+        });
+        EMG.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {            
+                updateState();
+            }            
+        });
+        EDA.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {            
+                updateState();
+            }            
+        });
 
         errorLabel = new JLabel("");
         errorLabel.setForeground(Color.red);
-        add(errorLabel, gbc.gx(0).gy(5).gw(5).a(GridBConstraints.LAST_LINE_START).wy(1));
+        add(errorLabel, gbc.gx(0).gy(10).gw(5).a(GridBConstraints.LAST_LINE_START).wy(1));
 
         accept = new JButton("Accept");
         
@@ -96,15 +134,13 @@ public class BitalinoCaptureConfigurationDialog extends JDialog implements Docum
                     }if(EDA.isSelected()){
                         sensor_rec=sensor_rec+100;                    
                     }
+                    SR=sSR.getValue();
                     dispose();
-                }
-                else{
-                    JOptionPane.showMessageDialog(null, "You must select a sensor option.");
                 }
             }
         });
 
-        gbc.gx(0).gy(6).a(GridBConstraints.LAST_LINE_END).gw(3).wy(1).f(GridBConstraints.NONE);
+        gbc.gx(0).gy(8).a(GridBConstraints.LAST_LINE_END).gw(3).wy(1).f(GridBConstraints.NONE);
         add(accept, gbc);
 
         setMinimumSize(new Dimension(400, 150));
@@ -136,7 +172,13 @@ public class BitalinoCaptureConfigurationDialog extends JDialog implements Docum
         if (nameField.getText().isEmpty()) {
             errorLabel.setText("A name for this configuration must be specified");
             accept.setEnabled(false);
-        } else {
+        }
+        else if(!ECG.isSelected() && !EMG.isSelected() && !EDA.isSelected()){
+            errorLabel.setText("A sensor for this configuration must be selected");
+            accept.setEnabled(false);            
+        }
+        
+        else {
             errorLabel.setText("");
             accept.setEnabled(true);
         }

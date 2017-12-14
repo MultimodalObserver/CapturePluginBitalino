@@ -53,7 +53,7 @@ public class CapturePluginBitalino implements CaptureProvider {
         boolean accepted = dialog.showDialog();
 
         if (accepted) {
-            BitalinoCaptureConfiguration configuration = new BitalinoCaptureConfiguration(dialog.getConfigurationName(),dialog.sensor_rec);
+            BitalinoCaptureConfiguration configuration = new BitalinoCaptureConfiguration(dialog.getConfigurationName(),dialog.sensor_rec,dialog.SR);
 
             configurations.add(configuration);
             return configuration;

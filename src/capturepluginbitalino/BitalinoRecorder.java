@@ -35,7 +35,7 @@ public class BitalinoRecorder {
     // validate MAC address
     private final String MAC = "98:D3:31:B2:11:33";
     final String mac = MAC.replace(":", "");
-    final int samplerate = 100;
+    private int samplerate = 100;
     //canales que lee
     final int[] analogs = {0,1,2};
     long resume = 0;
@@ -47,10 +47,11 @@ public class BitalinoRecorder {
     
     public int sw=1;
     
-    public BitalinoRecorder(File stageFolder, ProjectOrganization org, Participant p,int sensor,BitalinoCaptureConfiguration c){
+    public BitalinoRecorder(File stageFolder, ProjectOrganization org, Participant p,int sensor,int samplingRate,BitalinoCaptureConfiguration c){
         participant = p;
         this.org = org;
         this.config = c;
+        this.samplerate=samplingRate;
         switch(sensor){            
                 case 1:
                     this.sensor_op = 0;

@@ -13,12 +13,14 @@ public class BitalinoCaptureConfiguration implements RecordableConfiguration {
     
     private String id;
     BitalinoRecorder sr;
+    private int samplingRate;
     private int sensor;
     private static final Logger logger = Logger.getLogger(BitalinoRecorder.class.getName());
 
-    BitalinoCaptureConfiguration(String id, int sensor) {
+    BitalinoCaptureConfiguration(String id, int sensor, int samplingRate) {
         this.id = id;
         this.sensor = sensor;
+        this.samplingRate = samplingRate;
     }
     
     BitalinoCaptureConfiguration(){
@@ -27,7 +29,7 @@ public class BitalinoCaptureConfiguration implements RecordableConfiguration {
 
     @Override
     public void setupRecording(File stageFolder, ProjectOrganization org, Participant p) {
-         sr = new BitalinoRecorder(stageFolder, org, p,sensor, this);
+         sr = new BitalinoRecorder(stageFolder, org, p,sensor,samplingRate, this);
     }
 
     @Override
@@ -48,7 +50,7 @@ public class BitalinoCaptureConfiguration implements RecordableConfiguration {
     @Override
     public File toFile(File parent) {
         try {
-            File f = new File(parent, "bitalino_"+id+"-"+sensor+".xml");
+            File f = new File(parent, "bitalino_"+id+"-"+sensor+"_"+samplingRate+".xml");
             f.createNewFile();
             return f;
         } catch (IOException ex) {
@@ -62,8 +64,9 @@ public class BitalinoCaptureConfiguration implements RecordableConfiguration {
         String fileName = file.getName();
         if (fileName.contains("_") && fileName.contains(".") && fileName.contains("-")){
             String newId = fileName.substring(fileName.indexOf('_') + 1, fileName.indexOf("-"));
-            String newSensor = fileName.substring(fileName.indexOf('-') + 1, fileName.indexOf("."));
-            BitalinoCaptureConfiguration c = new BitalinoCaptureConfiguration(newId,Integer.parseInt(newSensor));
+            String newSensor = fileName.substring(fileName.indexOf('-') + 1, fileName.lastIndexOf("_"));
+            String newSR = fileName.substring(fileName.lastIndexOf('_') + 1, fileName.lastIndexOf("."));
+            BitalinoCaptureConfiguration c = new BitalinoCaptureConfiguration(newId,Integer.parseInt(newSensor),Integer.parseInt(newSR));
             return c;
         }
         return null;
