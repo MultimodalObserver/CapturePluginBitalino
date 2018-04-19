@@ -2,6 +2,7 @@ package capturepluginbitalino;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ResourceBundle;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -31,6 +32,7 @@ public class BitalinoCaptureConfigurationDialog extends JDialog implements Docum
     JCheckBox EDA;
     public int sensor_rec;
     int SR;
+    ResourceBundle dialogBundle = java.util.ResourceBundle.getBundle("properties/principal");
 
     boolean accepted = false;
 
@@ -58,8 +60,8 @@ public class BitalinoCaptureConfigurationDialog extends JDialog implements Docum
         setLayout(new GridBagLayout());
         GridBConstraints gbc = new GridBConstraints();
 
-        JLabel label = new JLabel("Configuration name: ");
-        JLabel samplerate = new JLabel("Select sample rate:");
+        JLabel label = new JLabel(dialogBundle.getString("configuration_n"));
+        JLabel samplerate = new JLabel(dialogBundle.getString("sr"));
         nameField = new JTextField();
         nameField.getDocument().addDocumentListener(this);
         sSR = new JSlider(0,100);
@@ -73,7 +75,7 @@ public class BitalinoCaptureConfigurationDialog extends JDialog implements Docum
         JLabel sen_emg = new JLabel("EMG");
         JLabel sen_eda = new JLabel("EDA");
 
-        JLabel sensores = new JLabel("Sensors:");
+        JLabel sensores = new JLabel(dialogBundle.getString("sens"));
         gbc.gx(0).gy(0).f(GridBConstraints.HORIZONTAL).a(GridBConstraints.FIRST_LINE_START).i(new Insets(5, 5, 5, 5));
         add(label, gbc);
         add(nameField, gbc.gx(2).wx(1).gw(6));
@@ -118,7 +120,7 @@ public class BitalinoCaptureConfigurationDialog extends JDialog implements Docum
         errorLabel.setForeground(Color.red);
         add(errorLabel, gbc.gx(0).gy(10).gw(5).a(GridBConstraints.LAST_LINE_START).wy(1));
 
-        accept = new JButton("Accept");
+        accept = new JButton(dialogBundle.getString("accept"));
         
         accept.addActionListener(new ActionListener() {
             @Override
@@ -170,11 +172,11 @@ public class BitalinoCaptureConfigurationDialog extends JDialog implements Docum
 
     private void updateState() {
         if (nameField.getText().isEmpty()) {
-            errorLabel.setText("A name for this configuration must be specified");
+            errorLabel.setText(dialogBundle.getString("name"));
             accept.setEnabled(false);
         }
         else if(!ECG.isSelected() && !EMG.isSelected() && !EDA.isSelected()){
-            errorLabel.setText("A sensor for this configuration must be selected");
+            errorLabel.setText(dialogBundle.getString("sensor"));
             accept.setEnabled(false);            
         }
         
