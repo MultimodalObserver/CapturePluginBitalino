@@ -7,14 +7,15 @@
 <!-- the Compile on Save feature is turned off for the project. -->
 <!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
 <!-- in the project's Project Properties dialog box.-->
-<project name="CapturePluginEDA" default="default" basedir=".">
+<project name="BitalinoCapturePlugin" default="default" basedir=".">
     <target name = "-post-jar">
         <jar jarfile="${dist.jar}" update = "true">
-            <zipfileset src="C:\Users\chris\Desktop\lib\bluecove-1.2.3-signed.jar" excludes="META-INF/*"/>
-            <zipfileset src="C:\Users\chris\Desktop\lib\bluecove-2.1.1-SNAPSHOT.jar" excludes="META-INF/*"/>
-            <zipfileset src="C:\Users\chris\Desktop\lib\com.google.common_1.0.0.201004262004.jar" excludes="META-INF/*"/>
+          
+            <zipfileset src="C:\Plugins\CapturePluginBitalino-master\lib\bluecove-1.2.3-signed.jar" excludes="META-INF/*"/>
+            <zipfileset src="C:\Plugins\CapturePluginBitalino-master\lib\bluecove-2.1.1-SNAPSHOT.jar" excludes="META-INF/*"/>
+            <zipfileset src="C:\Plugins\CapturePluginBitalino-master\lib\com.google.common_1.0.0.201004262004.jar" excludes="META-INF/*"/>
             <manifest>
-                <attribute name = "Main-Class" value="captureplugineda.CapturePluginEDA"/>
+                <attribute name = "Main-Class" value="capturepluginbitalino.CapturePluginBitalino"/>
             </manifest>
         </jar>        
     </target>

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package capturepluginbitalino;
 
 import bibliothek.util.xml.XElement;
@@ -28,13 +23,10 @@ import mo.organization.StagePlugin;
             @Extends(extensionPointId = "mo.capture.CaptureProvider")
         }
 )
-
 public class CapturePluginBitalino implements CaptureProvider {
 
-     List<Configuration> configurations;   
-    
+    private List<Configuration> configurations;
     private static final Logger logger = Logger.getLogger(CapturePluginBitalino.class.getName());
-    private BitalinoCaptureConfigurationDialog dialog;
 
     public CapturePluginBitalino() {
         configurations = new ArrayList<>();
@@ -47,18 +39,14 @@ public class CapturePluginBitalino implements CaptureProvider {
 
     @Override
     public Configuration initNewConfiguration(ProjectOrganization organization) {
+        BitalinoCaptureConfigurationDialog dialog = new BitalinoCaptureConfigurationDialog(organization);
 
-         dialog = new BitalinoCaptureConfigurationDialog(organization);
-
-        boolean accepted = dialog.showDialog();
-
-        if (accepted) {
-            BitalinoCaptureConfiguration configuration = new BitalinoCaptureConfiguration(dialog.getConfigurationName(),dialog.sensor_rec,dialog.SR);
-
+        if (dialog.showDialog()) {
+            BitalinoCaptureConfiguration configuration = new BitalinoCaptureConfiguration(
+                    dialog.getConfigurationName(), dialog.getSensorRec(), dialog.getSR());
             configurations.add(configuration);
             return configuration;
         }
-
         return null;
     }
 
@@ -92,7 +80,7 @@ public class CapturePluginBitalino implements CaptureProvider {
 
     @Override
     public File toFile(File parent) {
-         File file = new File(parent, "bitalino-capture.xml");
+        File file = new File(parent, "bitalino-capture.xml");
         if (!file.isFile()) {
             try {
                 file.createNewFile();
@@ -120,4 +108,3 @@ public class CapturePluginBitalino implements CaptureProvider {
         return file;
     }
 }
-

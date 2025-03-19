@@ -11,11 +11,16 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
-import javax.swing.JOptionPane;
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import mo.organization.FileDescription;
 import mo.organization.Participant;
 import mo.organization.ProjectOrganization;
@@ -46,6 +51,8 @@ public class BitalinoRecorder {
     private static final Logger logger = Logger.getLogger(BitalinoRecorder.class.getName());
     
     public int sw=1;
+    
+    ResourceBundle dialogBundle = ResourceBundle.getBundle("properties/principal");
     
     public BitalinoRecorder(File stageFolder, ProjectOrganization org, Participant p,int sensor,int samplingRate,BitalinoCaptureConfiguration c){
         participant = p;
@@ -143,7 +150,7 @@ public class BitalinoRecorder {
                 device.stop(); 
                 
             } catch (BITalinoException | IOException ex) {
-                JOptionPane.showMessageDialog(null, "No se ha encontrado dispositivo", "Bitalino", JOptionPane.ERROR_MESSAGE);
+                showAlert(dialogBundle.getString("alert"), "Bitalino Error");
                 CancelRecord();
                 
             }           
@@ -172,4 +179,23 @@ public class BitalinoRecorder {
             StopRecord();
             deleteFile();
         }
+        
+        //customizable error message
+        private void showAlert(String message, String title) {
+        javafx.application.Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+
+            Button okButton = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
+            okButton.setStyle("-fx-background-color: #ea908a; -fx-text-fill: black;");
+
+            alert.getDialogPane().setStyle("-fx-background-color: #d6cfcf; -fx-font-size: 14px; -fx-font-family: Arial;");
+
+            alert.showAndWait();
+        });
+    }
+
+
 }
